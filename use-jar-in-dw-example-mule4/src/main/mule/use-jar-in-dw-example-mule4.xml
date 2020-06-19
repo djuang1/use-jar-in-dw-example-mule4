@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="14c2050d-3bf8-46d8-901b-d4f84a158f1c" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="use-jar-in-dw-example-mule4Flow" doc:id="634892cb-af14-4607-a26d-319ec3b4938e" >
+		<http:listener doc:name="Listener" doc:id="dc3acbee-aed2-4549-9ee5-438898fd6046" config-ref="HTTP_Listener_config" path="/"/>
+		<ee:transform doc:name="Transform Message" doc:id="55e0c4b3-6257-4d55-926d-7597c033cbec" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+import java!com::dejim::HelloMule
+output application/json
+---
+{
+	a: "1",
+	b: HelloMule::helloWho("Max")
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<ee:transform doc:name="Transform Message" doc:id="58c8b0e4-e43b-426a-a147-193a97cd1735" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+import * from java!com::dejim::HelloMule
+output application/json
+---
+{
+	a: "1",
+	b: helloWho("Max")
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
